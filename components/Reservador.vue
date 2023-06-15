@@ -1,6 +1,6 @@
 <script setup>
-import { useSearchStore } from "@/stores/search"; 
-import { useSucursalStore } from "@/stores/sucursal";  
+import { useSearchStore } from "@/stores/search";
+import { useSucursalStore } from "@/stores/sucursal";
 import { storeToRefs } from "pinia";
 import { ref, computed } from "vue";
 const date = ref(new Date());
@@ -10,109 +10,112 @@ const storeSearch = useSearchStore();
 const storeSucursal = useSucursalStore();
 
 const sucursales = computed(() => {
-  return storeSucursal.sucursales;
+    return storeSucursal.sucursales;
 });
 onMounted(() => {
-  storeSucursal.fetchSucursales();
-  // storeSearch.options = sucursales;
+    storeSucursal.fetchSucursales();
+    // storeSearch.options = sucursales;
 });
 
 function minimoDeDias(date, days) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + days);
-  return newDate;
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + days);
+    return newDate;
 }
 
 function minimoDeHoras(date, horas) {
-  const newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + horas);
-  return newDate;
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + horas);
+    return newDate;
 }
 
-const currentDate = new Date(); 
-const currentTime = currentDate.getTime(); 
+const currentDate = new Date();
+const currentTime = currentDate.getTime();
 const oneDay = 24 * 60 * 60 * 1000;
-const newTime = currentTime + oneDay; 
-const nextDay = new Date(newTime); 
-
-
-
+const newTime = currentTime + oneDay;
+const nextDay = new Date(newTime);
 
 const startTime = ref({ hours: 10, minutes: 30 });
 
 function getWorkingHours(openingTime, closingTime) {
-  let workingHours = [];
-  // con fecha queremos revisar si la fecha de retiro es hoy y sumarle horas
-  for (let i = openingTime; i < closingTime; i++) {
-    workingHours.push({ text: `${i}`, value: i });
-  }
-  return workingHours;
+    let workingHours = [];
+    // con fecha queremos revisar si la fecha de retiro es hoy y sumarle horas
+    for (let i = openingTime; i < closingTime; i++) {
+        workingHours.push({ text: `${i}`, value: i });
+    }
+    return workingHours;
 }
 
 function domingoCerrados(domingoApertura, domingoCierre) {
-  if (domingoApertura === 0 && domingoCierre === 0) {
-    return [0];
-  }
+    if (domingoApertura === 0 && domingoCierre === 0) {
+        return [0];
+    }
 }
 
 function horarioFines(openingTime, closingTime) {
-  let fines = [];
-  for (let i = openingTime; i < closingTime; i++) {
-    fines.push({ text: `${i}`, value: i });
-  }
-  return fines;
+    let fines = [];
+    for (let i = openingTime; i < closingTime; i++) {
+        fines.push({ text: `${i}`, value: i });
+    }
+    return fines;
 }
 
 const minutesArray = [
-  { text: "00", value: 0 },
-  { text: "15", value: 15 },
-  { text: "30", value: 30 },
-  { text: "45", value: 45 },
+    { text: "00", value: 0 },
+    { text: "15", value: 15 },
+    { text: "30", value: 30 },
+    { text: "45", value: 45 },
 ];
 </script>
 <template>
-<fieldset class="reservador">
-    <header>
-        <h2>
-            Haz tu Reserva
-        </h2>
-    </header>
+    <fieldset class="reservador">
+        <header>
+            <h2>Haz tu Reserva</h2>
+        </header>
 
-    <fieldset class="sucursal-pick"> 
-        <legend>sucursal de retiro</legend>
-        <label class="sucursal">
-            <select
-              v-model="storeSearch.sucursal"
-              name="sucursal"
-              as="select"
-              rules="required"
-            >
-              <option disabled value="">Selecciona una sucursal</option>
-              <option v-for="option in sucursales" :key="option" :value="option">
-                {{ option.name }}
-              </option>
-            </select>
-        </label>
-    </fieldset>
+        <fieldset class="sucursal-pick">
+            <legend>sucursal de retiro</legend>
+            <label class="sucursal">
+                <select
+                    v-model="storeSearch.sucursal"
+                    name="sucursal"
+                    as="select"
+                    rules="required"
+                >
+                    <option disabled value="">Selecciona una sucursal</option>
+                    <option
+                        v-for="option in sucursales"
+                        :key="option"
+                        :value="option"
+                    >
+                        {{ option.name }}
+                    </option>
+                </select>
+            </label>
+        </fieldset>
 
-    <fieldset class="sucursal-retorno-pick"> 
-        <legend>sucursal de retorno</legend>
-        <label class="sucursal">
-            <select
-            v-model="storeSearch.sucursalRetorno"
-            name="sucursalRetorno"
-            as="select"
-            rules="required"
-          >
-            <option disabled value="">Selecciona una sucursal</option>
-            <option v-for="option in sucursales" :key="option" :value="option">
-              {{ option.name }}
-            </option>
-          </select>
-        </label>
-    </fieldset>
-    
-    <!-- <fieldset class="dia-pick fechas">
+        <fieldset class="sucursal-retorno-pick">
+            <legend>sucursal de retorno</legend>
+            <label class="sucursal">
+                <select
+                    v-model="storeSearch.sucursalRetorno"
+                    name="sucursalRetorno"
+                    as="select"
+                    rules="required"
+                >
+                    <option disabled value="">Selecciona una sucursal</option>
+                    <option
+                        v-for="option in sucursales"
+                        :key="option"
+                        :value="option"
+                    >
+                        {{ option.name }}
+                    </option>
+                </select>
+            </label>
+        </fieldset>
+
+        <!-- <fieldset class="dia-pick fechas">
 
       
             <div v-if="storeSearch.sucursal">
@@ -222,58 +225,50 @@ const minutesArray = [
   
     </fieldset> -->
 
-    <footer>
-        
-    </footer>
-</fieldset>
+        <footer></footer>
+    </fieldset>
 </template>
 <style lang="scss" scoped>
-
-
-.reservador {  
+.reservador {
     background-color: #824296e3;
     column-gap: 1px;
     row-gap: 1px;
     padding: 5px 20px 10px 20px;
-    color: white; 
+    color: white;
     align-items: center;
-    display:flex; 
+    display: flex;
     flex-direction: column;
- 
-    header   { 
+
+    header {
     }
     h2 {
-      font-size: 22px;
-      font-weight: bold; 
-    }  
+        font-size: 22px;
+        font-weight: bold;
+    }
     legend {
-      font-size: 14px;
-      font-weight: bold; 
-    } 
-    
-    fieldset { 
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 14px; 
-    select {
-      height: 45px;
-      
+        font-size: 14px;
+        font-weight: bold;
     }
-    input {
-      height: 45px;
-    }
-    }
-  
-    footer { 
-      margin-top: 15px;
-      align-self: center;
-    }
-  } 
 
-  
-// Desktop  
-@media screen and (min-width: 768px) { 
+    fieldset {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 14px;
+        select {
+            height: 45px;
+        }
+        input {
+            height: 45px;
+        }
+    }
 
-} 
+    footer {
+        margin-top: 15px;
+        align-self: center;
+    }
+}
 
+// Desktop
+@media screen and (min-width: 768px) {
+}
 </style>
