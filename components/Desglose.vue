@@ -115,7 +115,7 @@ export default {
 <template>
     <section class="pt-4 mx-2">
         <div
-            class="flex justify-center w-[90%] text-center mx-auto pb-3 border-b-2 border-primary"
+            class="flex justify-center w-[90%] text-center mx-auto pb-4 border-bottom"
         >
             <div>
                 <h3 class="text-xl font-bold">Retiro en</h3>

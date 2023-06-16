@@ -7,7 +7,7 @@ const auto = computed(() => {
 });
 </script>
 <template>
-    <section class="mx-5 border-b-2 border-solid">
+    <section class="mx-5 border-t-4 border-bottom">
         <header class="">
             <div class="text-center">
                 <h3 class="text-3xl pt-2 font-bold">
@@ -15,8 +15,12 @@ const auto = computed(() => {
                 </h3>
                 <em>o similar</em>
             </div>
-            <figure class="w-40 mx-auto">
-                <img :src="getAssetURL(auto.imagen)" loading="lazy" />
+            <figure class="max-w-40 mx-auto">
+                <img
+                    :src="getAssetURL(auto.imagen)"
+                    loading="lazy"
+                    class="w-full"
+                />
             </figure>
         </header>
 
