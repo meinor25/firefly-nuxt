@@ -1,7 +1,6 @@
 <script setup>
 import { useSearchStore } from "@/stores/search";
 import { useSucursalStore } from "@/stores/sucursal";
-import moment from "moment";
 import { usePedidoStore } from "@/stores/pedido";
 
 // import { defineRule, Form, Field, ErrorMessage, configure } from "vee-validate";
@@ -9,7 +8,6 @@ import { usePedidoStore } from "@/stores/pedido";
 //STORES
 const storeSearch = useSearchStore();
 const storeSucursal = useSucursalStore();
-const storePedido = usePedidoStore();
 
 const currentDate = new Date();
 const currentTime = currentDate.getTime();
@@ -17,69 +15,33 @@ const oneDay = 4 * 60 * 60 * 1000;
 const newTime = currentTime + oneDay;
 const nextDay = new Date(newTime);
 
-const fechaFormat = (value) => {
-    return moment(value).format("yyyy MMM DD");
-};
-
-onMounted(() => {
-    storeSucursal.fetchSucursales();
-    // storeSearch.options = useSucursalStore.fetchSucursales();
-});
-
-const sucursales = computed(() => {
-    return storeSucursal.sucursales;
-});
-
-function minimoDeDias(date, days) {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + days);
-    return newDate;
-}
-
-//Check if the date matches de actual date
-function checkCurrentDate(date) {
-    const currentDateFormatted = fechaFormat(currentDate);
-    const pickedDateFormatted = fechaFormat(date);
-    return pickedDateFormatted !== currentDateFormatted ? true : false;
-}
-
-//Check if store is all filled
-function checkFormFilled() {
-    console.log(
-        !checkCurrentDate(storeSearch.datePick),
-        !checkCurrentDate(storeSearch.dateBack)
-    );
-    if (
-        !checkCurrentDate(storeSearch.datePick) &&
-        !checkCurrentDate(storeSearch.dateBack)
-    ) {
-        return true;
-    }
-}
-const startTime = ref({ hours: 10, minutes: 15 });
-
-function getWorkingHours(openingTime, closingTime) {
-    let workingHours = [];
-    // con fecha queremos revisar si la fecha de retiro es hoy y sumarle horas
-    for (let i = openingTime; i < closingTime; i++) {
-        workingHours.push({ text: `${i}`, value: i });
-    }
-    return workingHours;
-}
-
-function domingoCerrados(domingoApertura, domingoCierre) {
-    if (domingoApertura === 24 && domingoCierre === 0) {
-        return [0];
-    }
-}
-
 const minutesArray = [
     { text: "00", value: 0 },
     { text: "15", value: 15 },
     { text: "30", value: 30 },
     { text: "45", value: 45 },
 ];
+const startTime = ref({ hours: 10, minutes: 15 });
+
+const sucursales = computed(() => {
+    return storeSucursal.sucursales;
+});
+
+onMounted(() => {
+    storeSucursal.fetchSucursales();
+    // storeSearch.options = useSucursalStore.fetchSucursales();
+});
+
+const {
+    checkFormFilled,
+    minimoDeDias,
+    checkCurrentDate,
+    fechaFormat,
+    domingoCerrados,
+    getWorkingHours,
+} = useReservation();
 </script>
+
 <template>
     <!-- <form class="reservador" @submit="storeSearch.siguiente"> -->
     <form class="reservador">
@@ -139,8 +101,8 @@ const minutesArray = [
                                 <p class="pick text-[14px]">
                                     {{
                                         checkCurrentDate(storeSearch.datePick)
-                                            ? fechaFormat(storeSearch.datePick)
-                                            : "FECHA"
+                                            ? "FECHA"
+                                            : fechaFormat(storeSearch.datePick)
                                     }}
                                 </p>
                             </template>
@@ -271,8 +233,8 @@ const minutesArray = [
                                 <p class="pick">
                                     {{
                                         checkCurrentDate(storeSearch.dateBack)
-                                            ? fechaFormat(storeSearch.dateBack)
-                                            : "FECHA"
+                                            ? "FECHA"
+                                            : fechaFormat(storeSearch.dateBack)
                                     }}
                                 </p>
                             </template>
@@ -318,7 +280,7 @@ const minutesArray = [
                 <div
                     class="verificar"
                     @click="storeSearch.siguiente"
-                    :class="{ disabled: checkFormFilled() }"
+                    :class="{ disabled: !checkFormFilled() }"
                 >
                     {{ $t("buscar") }}
                 </div>
