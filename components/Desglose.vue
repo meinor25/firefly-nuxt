@@ -152,81 +152,92 @@ export default {
             </dd>
         </dl>
 
-        <h6>Modelo:</h6>
-        <dl>
-            <dt>{{ pedido.carro.marca }} {{ pedido.carro.modelo }}</dt>
-            <dd v-if="pedido.reserva === 'prepago'">
-                {{
-                    prepago(
-                        pedido.carro.precio_firefly *
-                            pedidoStore.diffDias(
-                                pedido.diaRetorno,
-                                pedido.diaRetiro
-                            ),
-                        pedido.carro.descuento_prepago
-                    )
-                }}
-            </dd>
-            <dd v-else>
-                {{
-                    toUSDFormat(
-                        pedido.carro.precio_firefly *
-                            pedidoStore.diffDias(
-                                pedido.diaRetorno,
-                                pedido.diaRetiro
-                            )
-                    )
-                }}
-            </dd>
-        </dl>
-        <h6>Coberturas:</h6>
-
-        <dl v-if="pedido.carro.tipo !== 'Sedan'">
-            <dt v-if="pedido.cobertura.nombre">
-                {{ pedido.cobertura.nombre }}
-            </dt>
-            <dd>
-                {{
-                    toUSDFormat(
-                        pedido.cobertura.precio_2 *
-                            pedidoStore.diffDias(
-                                pedido.diaRetorno,
-                                pedido.diaRetiro
-                            )
-                    )
-                }}
-            </dd>
-        </dl>
-        <dl v-else>
-            <dt>
-                {{ pedido.cobertura.nombre }}
-            </dt>
-            <dd>
-                {{
-                    toUSDFormat(
-                        pedido.cobertura.precio *
-                            pedidoStore.diffDias(
-                                pedido.diaRetorno,
-                                pedido.diaRetiro
-                            )
-                    )
-                }}
-            </dd>
-        </dl>
-        <dl>
-            <dt>Asistencia Vial(ERA)</dt>
-            <dd>
-                {{
-                    toUSDFormat(
-                        pedido.era *
-                            pedidoStore.diffDias(
-                                pedido.diaRetorno,
-                                pedido.diaRetiro
-                            )
-                    )
-                }}
-            </dd>
-        </dl>
+        <div class="mx-4">
+            <h6 class="font-bold text-xl my-5">Detalles de la reserva</h6>
+            <div>
+                <div>
+                    <h4 class="font-bold">Modelo</h4>
+                    <div class="flex justify-between">
+                        <p>
+                            {{ pedido.carro.marca }}
+                            {{ pedido.carro.modelo }}
+                        </p>
+                        <dd v-if="pedido.reserva === 'prepago'">
+                            {{
+                                prepago(
+                                    pedido.carro.precio_firefly *
+                                        pedidoStore.diffDias(
+                                            pedido.diaRetorno,
+                                            pedido.diaRetiro
+                                        ),
+                                    pedido.carro.descuento_prepago
+                                )
+                            }}
+                        </dd>
+                        <dd v-else>
+                            {{
+                                toUSDFormat(
+                                    pedido.carro.precio_firefly *
+                                        pedidoStore.diffDias(
+                                            pedido.diaRetorno,
+                                            pedido.diaRetiro
+                                        )
+                                )
+                            }}
+                        </dd>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mt-2">Coberturas</h4>
+                    <dl v-if="pedido.carro.tipo !== 'Sedan'">
+                        <dt v-if="pedido.cobertura.nombre">
+                            {{ pedido.cobertura.nombre }}
+                        </dt>
+                        <dd>
+                            {{
+                                toUSDFormat(
+                                    pedido.cobertura.precio_2 *
+                                        pedidoStore.diffDias(
+                                            pedido.diaRetorno,
+                                            pedido.diaRetiro
+                                        )
+                                )
+                            }}
+                        </dd>
+                    </dl>
+                    <dl v-else>
+                        <dt>
+                            {{ pedido.cobertura.nombre }}
+                        </dt>
+                        <dd>
+                            {{
+                                toUSDFormat(
+                                    pedido.cobertura.precio *
+                                        pedidoStore.diffDias(
+                                            pedido.diaRetorno,
+                                            pedido.diaRetiro
+                                        )
+                                )
+                            }}
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>Asistencia Vial(ERA)</dt>
+                        <dd>
+                            {{
+                                toUSDFormat(
+                                    pedido.era *
+                                        pedidoStore.diffDias(
+                                            pedido.diaRetorno,
+                                            pedido.diaRetiro
+                                        )
+                                )
+                            }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
 
         <h6>Extras:</h6>
 

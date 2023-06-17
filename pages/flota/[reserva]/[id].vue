@@ -24,8 +24,8 @@ onMounted(() => {
 <template>
     <main class="auto my-py">
         <article>
+            <ReservaCard />
             <div class="">
-                <ReservaCard />
             </div>
             <!-- <Desglose /> -->
             <!-- <footer v-if="storePedido.pedido.cobertura.precio > 0">

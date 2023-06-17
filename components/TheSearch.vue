@@ -6,9 +6,16 @@ import { usePedidoStore } from "@/stores/pedido";
 
 // import { defineRule, Form, Field, ErrorMessage, configure } from "vee-validate";
 
+//STORES
 const storeSearch = useSearchStore();
 const storeSucursal = useSucursalStore();
 const storePedido = usePedidoStore();
+
+const currentDate = new Date();
+const currentTime = currentDate.getTime();
+const oneDay = 4 * 60 * 60 * 1000;
+const newTime = currentTime + oneDay;
+const nextDay = new Date(newTime);
 
 const fechaFormat = (value) => {
     return moment(value).format("yyyy MMM DD");
@@ -29,12 +36,26 @@ function minimoDeDias(date, days) {
     return newDate;
 }
 
-const currentDate = new Date();
-const currentTime = currentDate.getTime();
-const oneDay = 4 * 60 * 60 * 1000;
-const newTime = currentTime + oneDay;
-const nextDay = new Date(newTime);
+//Check if the date matches de actual date
+function checkCurrentDate(date) {
+    const currentDateFormatted = fechaFormat(currentDate);
+    const pickedDateFormatted = fechaFormat(date);
+    return pickedDateFormatted !== currentDateFormatted ? true : false;
+}
 
+//Check if store is all filled
+function checkFormFilled() {
+    console.log(
+        !checkCurrentDate(storeSearch.datePick),
+        !checkCurrentDate(storeSearch.dateBack)
+    );
+    if (
+        !checkCurrentDate(storeSearch.datePick) &&
+        !checkCurrentDate(storeSearch.dateBack)
+    ) {
+        return true;
+    }
+}
 const startTime = ref({ hours: 10, minutes: 15 });
 
 function getWorkingHours(openingTime, closingTime) {
@@ -78,11 +99,11 @@ const minutesArray = [
                                 Selecciona una sucursal
                             </option>
                             <option
-                                v-for="option in sucursales"
-                                :key="option"
-                                :value="option"
+                                v-for="sucursal in sucursales"
+                                :key="sucursal"
+                                :value="sucursal"
                             >
-                                {{ option.name }}
+                                {{ sucursal.name }}
                             </option>
                         </select>
                     </label>
@@ -100,20 +121,27 @@ const minutesArray = [
                             v-model="storeSearch.datePick"
                             locale="es"
                             :start-time="startTime"
-                            :disabled-week-days="
+                            :disabled-week-days="[
                                 domingoCerrados(
                                     storeSearch.sucursal
                                         .horario_apertura_domingo,
                                     storeSearch.sucursal.horario_cierre_domingo
-                                )
-                            "
+                                ),
+                            ]"
                             :highlight="storeSearch.sucursal.dias_festivos"
-                            :disabled-dates="storeSearch.sucursal.dias_festivos"
+                            :disabled-dates="[
+                                storeSearch.sucursal.dias_festivos,
+                                currentDate,
+                            ]"
                             highlight-disabled-days
                         >
                             <template #trigger>
-                                <p class="pick">
-                                    {{ fechaFormat(storeSearch.datePick) }}
+                                <p class="pick text-[14px]">
+                                    {{
+                                        checkCurrentDate(storeSearch.datePick)
+                                            ? fechaFormat(storeSearch.datePick)
+                                            : "FECHA"
+                                    }}
                                 </p>
                             </template>
                         </date-picker>
@@ -241,7 +269,11 @@ const minutesArray = [
                         >
                             <template #trigger>
                                 <p class="pick">
-                                    {{ fechaFormat(storeSearch.dateBack) }}
+                                    {{
+                                        checkCurrentDate(storeSearch.dateBack)
+                                            ? fechaFormat(storeSearch.dateBack)
+                                            : "FECHA"
+                                    }}
                                 </p>
                             </template>
                         </date-picker>
@@ -286,7 +318,7 @@ const minutesArray = [
                 <div
                     class="verificar"
                     @click="storeSearch.siguiente"
-                    :class="{ disabled: !storeSearch.isAllFilled }"
+                    :class="{ disabled: checkFormFilled() }"
                 >
                     {{ $t("buscar") }}
                 </div>
